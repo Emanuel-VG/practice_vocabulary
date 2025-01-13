@@ -36,7 +36,13 @@ class Window1(Screen):
         file_path = 'data/noun/technology/computer_internet'
         # headers.add_widget(
         #     Button(text='↻', pos_hint={'x': 0, 'top': 1}, size_hint=(.2, .1)))
-        headers.add_widget(self.options_themes(paths_themes, file_path))
+        # headers.add_widget(self.options_themes(paths_themes, file_path))
+        button_themes = Button(
+            text=file_path.replace('data/', ''),
+            size_hint=(.8, .1),
+            pos_hint={'left': 0, 'top': 1})
+        button_themes.bind(on_press=self.change_window)
+        headers.add_widget(button_themes)
         # headers.add_widget(Button(text='mode', pos_hint={
         #                    'right': 1, 'top': 1}, size_hint=(.2, .1)))
         with open(file_path+'/words.csv', 'r', encoding='utf-8') as csv_file:
@@ -71,6 +77,9 @@ class Window1(Screen):
         dropDown.bind(on_select=lambda instance, x: title_and_options.setter(
             'text')(title_and_options, x))
         return title_and_options
+
+    def change_window(self, instance):
+        self.manager.current = 'window2'
 
     def play_sound(self, path):
         sound = SoundLoader.load(path)
@@ -148,3 +157,6 @@ class Window1(Screen):
         sentence.bind(pos=lambda instance, value: setattr(
             sentence.rect, 'pos', value))
         return sentence
+
+    def change_window(self, instance):
+        self.manager.current = 'window2'
