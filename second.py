@@ -1,7 +1,6 @@
 from kivy.uix.screenmanager import Screen
-from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.scrollview import ScrollView
 from kivy.uix.stacklayout import StackLayout
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from icecream import ic
@@ -15,9 +14,21 @@ class Window2(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        scrollView = ScrollView(
+            size_hint=(1, 1),
+            bar_width=10,
+            pos_hint={"center_x": 0.5, "center_y": 0.5},
+            scroll_wheel_distance=100,
+        )
         self.path_set = ''
         themes_content = StackLayout(
-            orientation='lr-tb', spacing=(5, 10), padding=10)
+            orientation='lr-tb',
+            spacing=(5, 10),
+            # spacing=10,
+            padding=10,
+            size_hint_y=None
+        )
+        themes_content.bind(minimum_height=themes_content.setter('height'))
         with themes_content.canvas.before:
             Color(0.13, 0.13, 0.15, 1)
             self.rect = Rectangle(size=themes_content.size,
@@ -29,15 +40,16 @@ class Window2(Screen):
             if path[:path.find('/')] != category:
                 category = path[:path.find('/')]
                 themes_content.add_widget(self.label_category(category))
-            themes_content.add_widget(self.button_them(category, path))
+            themes_content.add_widget(self.button_them(category, path, False))
         sub_category = ''
-        themes_content.add_widget(self.label_category('NOUN'))
+        themes_content.add_widget(self.label_category('==NOUN=='))
         for path in self.paths_themes_list():
             if path[:path.find('/')] != sub_category:
                 sub_category = path[:path.find('/')]
                 themes_content.add_widget(self.label_category(sub_category))
             themes_content.add_widget(self.button_them(sub_category, path))
-        self.add_widget(themes_content)
+        scrollView.add_widget(themes_content)
+        self.add_widget(scrollView)
 
     def update_background(self, instance, value):
         self.rect.size = instance.size
@@ -77,7 +89,7 @@ class Window2(Screen):
         label = Label(
             text=title.upper(),
             font_size=25,
-            size_hint=(.2, .1),
+            size_hint=(.2, None),
             bold=True,
             color=(0, 0, 0, 1),
         )
@@ -90,15 +102,17 @@ class Window2(Screen):
             label.rect, 'pos', value))
         return label
 
-    def button_them(self, category, path):
+    def button_them(self, category, path, noun=True):
         button = Button(
             text=path.replace(category+'/', ''),
-            font_size=15,
-            size_hint=(.2, .1),
+            font_size=20,
+            size_hint=(.2, None),
             background_color=(0.66, 0.72, 0.81, 1),
             background_normal='',
             color=(0, 0, 0, 1),
         )
+        if noun:
+            path = 'noun/'+path
         button.bind(on_press=lambda instance: self.two_change(path))
         return button
 

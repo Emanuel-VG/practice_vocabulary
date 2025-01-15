@@ -1,5 +1,6 @@
 from icecream import ic
 import csv
+from kivy.uix.scrollview import ScrollView
 from kivy.app import App
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.relativelayout import RelativeLayout
@@ -30,8 +31,15 @@ class Window1(Screen):
             self.rect = Rectangle(size=self.headers.size, pos=self.headers.pos)
         self.headers.bind(size=self.update_background,
                           pos=self.update_background)
-        self.grid_layout = GridLayout(cols=4, padding=10, spacing=(1, 3))
-        self.grid_layout.size_hint = (1, .9)
+        self.grid_layout = GridLayout(
+            cols=4,
+            padding=10,
+            spacing=(1, 3),
+            size_hint_y=None
+        )
+        self.grid_layout.size_hint_x = 1
+        # self.grid_layout.size_hint = (1, .9)
+        self.grid_layout.bind(minimum_height=self.grid_layout.setter('height'))
         # paths_themes = self.paths_themes_list()
         # file_path = self.path_them()
         # headers.add_widget(
@@ -49,9 +57,17 @@ class Window1(Screen):
         self.headers.add_widget(self.title_button)
         # headers.add_widget(Button(text='mode', pos_hint={
         #                    'right': 1, 'top': 1}, size_hint=(.2, .1)))
-        self.headers.add_widget(self.grid_layout)
         self.add_widget(self.headers)
         self.populate_grid()
+        scroll_view = ScrollView(
+            size_hint=(1, .9),
+            scroll_wheel_distance=100,
+            pos_hint={"center_x": 0.5, "center_y": 0.45},
+            # pos_hint={"center_x": 0.5, "top": 1}
+        )
+        scroll_view.add_widget(self.grid_layout)
+        self.headers.add_widget(scroll_view)
+        # self.headers.add_widget(self.grid_layout)
 
     def update_background(self, instance, value):
         self.rect.size = instance.size
