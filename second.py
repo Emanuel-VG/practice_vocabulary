@@ -7,45 +7,40 @@ from kivy.uix.label import Label
 from icecream import ic
 from kivy.uix.dropdown import DropDown
 import pathlib
+from kivy.graphics import Rectangle, Color
 
 
 class Window2(Screen):
+    path_to_window1 = ''
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         themes_content = StackLayout(
-            orientation='lr-tb', spacing=10, padding=10)
+            orientation='lr-tb', spacing=(5, 10), padding=10)
+        with themes_content.canvas.before:
+            Color(0.13, 0.13, 0.15, 1)
+            self.rect = Rectangle(size=themes_content.size,
+                                  pos=themes_content.pos)
+        themes_content.bind(size=self.update_background,
+                            pos=self.update_background)
         category = ''
         for path in self.paths_themes_list(type_path='other'):
             if path[:path.find('/')] != category:
                 category = path[:path.find('/')]
-                themes_content.add_widget(
-                    Label(text=category.upper(), font_size=25, size_hint=(.2, .1), bold=True))
-            themes_content.add_widget(
-                Button(text=path.replace(category+'/', ''), font_size=15, size_hint=(.2, .1)))
+                themes_content.add_widget(self.label_category(category))
+            themes_content.add_widget(self.button_them(category, path))
         sub_category = ''
-        themes_content.add_widget(
-            Label(text='NOUN', font_size=25, size_hint=(.2, .1), bold=True))
+        themes_content.add_widget(self.label_category('NOUN'))
         for path in self.paths_themes_list():
             if path[:path.find('/')] != sub_category:
                 sub_category = path[:path.find('/')]
-                themes_content.add_widget(
-                    Label(text=sub_category.upper(), font_size=25, size_hint=(.2, .1), bold=True))
-            themes_content.add_widget(
-                Button(text=path.replace(sub_category+'/', ''), font_size=15, size_hint=(.2, .1)))
-
-            # layout = BoxLayout(orientation='vertical')
-
-            # label = Label(text='Esta es la Pantalla 2')
-            # boton = Button(text='Regresar a Pantalla 1')
-            # boton.bind(on_press=self.change_window)
-
-            # layout.add_widget(label)
-            # layout.add_widget(boton)
-            # self.add_widget(layout)
+                themes_content.add_widget(self.label_category(sub_category))
+            themes_content.add_widget(self.button_them(sub_category, path))
         self.add_widget(themes_content)
 
-    def change_window(self, instance):
-        self.manager.current = 'window1'
+    def update_background(self, instance, value):
+        self.rect.size = instance.size
+        self.rect.pos = instance.pos
 
     def options_themes(self, paths_themes, file_path):
         dropDown = DropDown()
@@ -76,3 +71,37 @@ class Window2(Screen):
             return noun
         other = [path for path in paths if path.count('/') == 1]
         return other
+
+    def label_category(self, title):
+        label = Label(
+            text=title.upper(),
+            font_size=25,
+            size_hint=(.2, .1),
+            bold=True,
+            color=(0, 0, 0, 1),
+        )
+        with label.canvas.before:
+            Color(0.52, 0.57, 0.67, 1)
+            label.rect = Rectangle(size=label.size, pos=label.pos)
+        label.bind(size=lambda instance, value: setattr(
+            label.rect, 'size', value))
+        label.bind(pos=lambda instance, value: setattr(
+            label.rect, 'pos', value))
+        return label
+
+    def button_them(self, category, path):
+        button = Button(
+            text=path.replace(category+'/', ''),
+            font_size=15,
+            size_hint=(.2, .1),
+            background_color=(0.66, 0.72, 0.81, 1),
+            background_normal='',
+            color=(0, 0, 0, 1),
+        )
+        button.bind(on_press=self.change_window)
+        return button
+
+    def change_window(self, instance):
+        window_1 = self.manager.get_screen('window1').path_from_window2(
+            'data/noun/employment/education')
+        self.manager.current = 'window1'

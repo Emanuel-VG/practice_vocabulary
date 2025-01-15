@@ -17,8 +17,12 @@ path_font_name = 'lsansuni.ttf'
 
 
 class Window1(Screen):
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        # ic(self.file_path)
+        self.file_path = 'data/noun/technology/computer_internet'
+        ic(self.file_path)
         Window.size = (1366, 768)
         Window.left = 0
         Window.top = 0
@@ -31,12 +35,11 @@ class Window1(Screen):
         grid_layout.size_hint = (1, .9)
         # paths_themes = self.paths_themes_list()
         # file_path = self.path_them()
-        file_path = 'data/noun/technology/computer_internet'
         # headers.add_widget(
         #     Button(text='↻', pos_hint={'x': 0, 'top': 1}, size_hint=(.2, .1)))
         # headers.add_widget(self.options_themes(paths_themes, file_path))
         title_button = Button(
-            text=file_path.replace('data/', '').upper(),
+            text=self.file_path.replace('data/', '').upper(),
             font_size=30,
             size_hint=(.8, .1),
             pos_hint={'left': 0, 'top': 1},
@@ -47,13 +50,14 @@ class Window1(Screen):
         headers.add_widget(title_button)
         # headers.add_widget(Button(text='mode', pos_hint={
         #                    'right': 1, 'top': 1}, size_hint=(.2, .1)))
-        with open(file_path+'/words.csv', 'r', encoding='utf-8') as csv_file:
+        with open(self.file_path+'/words.csv', 'r', encoding='utf-8') as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=',')
             for line in csv_reader:
                 grid_layout.add_widget(self.label_word(line[0]))
                 grid_layout.add_widget(
-                    self.create_phonetics(line[1], file_path, line[4]))
-                grid_layout.add_widget(self.image(file_path, line[8], line[7]))
+                    self.create_phonetics(line[1], self.file_path, line[4]))
+                grid_layout.add_widget(self.image(
+                    self.file_path, line[8], line[7]))
                 grid_layout.add_widget(self.example(line[9]))
         headers.add_widget(grid_layout)
         self.add_widget(headers)
@@ -148,3 +152,7 @@ class Window1(Screen):
 
     def change_window(self, instance):
         self.manager.current = 'window2'
+
+    def path_from_window2(self, text):
+        ic(text)
+        self.file_path = text
