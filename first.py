@@ -26,19 +26,20 @@ class Window1(Screen):
         Window.size = (1366, 768)
         Window.left = 0
         Window.top = 0
-        headers = RelativeLayout()
-        with headers.canvas.before:
+        self.headers = RelativeLayout()
+        with self.headers.canvas.before:
             Color(0.13, 0.13, 0.15, 1)
-            self.rect = Rectangle(size=headers.size, pos=headers.pos)
-        headers.bind(size=self.update_background, pos=self.update_background)
-        grid_layout = GridLayout(cols=4, padding=10, spacing=(1, 3))
-        grid_layout.size_hint = (1, .9)
+            self.rect = Rectangle(size=self.headers.size, pos=self.headers.pos)
+        self.headers.bind(size=self.update_background,
+                          pos=self.update_background)
+        self.grid_layout = GridLayout(cols=4, padding=10, spacing=(1, 3))
+        self.grid_layout.size_hint = (1, .9)
         # paths_themes = self.paths_themes_list()
         # file_path = self.path_them()
         # headers.add_widget(
         #     Button(text='↻', pos_hint={'x': 0, 'top': 1}, size_hint=(.2, .1)))
         # headers.add_widget(self.options_themes(paths_themes, file_path))
-        title_button = Button(
+        self.title_button = Button(
             text=self.file_path.replace('data/', '').upper(),
             font_size=30,
             size_hint=(.8, .1),
@@ -46,21 +47,13 @@ class Window1(Screen):
             color=(0.8, 0.8, 0.8, 1),
             bold=True
         )
-        title_button.bind(on_press=self.change_window)
-        headers.add_widget(title_button)
+        self.title_button.bind(on_press=self.change_window)
+        self.headers.add_widget(self.title_button)
         # headers.add_widget(Button(text='mode', pos_hint={
         #                    'right': 1, 'top': 1}, size_hint=(.2, .1)))
-        with open(self.file_path+'/words.csv', 'r', encoding='utf-8') as csv_file:
-            csv_reader = csv.reader(csv_file, delimiter=',')
-            for line in csv_reader:
-                grid_layout.add_widget(self.label_word(line[0]))
-                grid_layout.add_widget(
-                    self.create_phonetics(line[1], self.file_path, line[4]))
-                grid_layout.add_widget(self.image(
-                    self.file_path, line[8], line[7]))
-                grid_layout.add_widget(self.example(line[9]))
-        headers.add_widget(grid_layout)
-        self.add_widget(headers)
+        self.headers.add_widget(self.grid_layout)
+        self.add_widget(self.headers)
+        self.populate_grid()
 
     def update_background(self, instance, value):
         self.rect.size = instance.size
@@ -156,3 +149,17 @@ class Window1(Screen):
     def path_from_window2(self, text):
         ic(text)
         self.file_path = text
+        self.title_button.text = self.file_path.replace('data/', '').upper()
+        self.populate_grid()
+
+    def populate_grid(self):
+        self.grid_layout.clear_widgets()
+        with open(self.file_path + '/words.csv', 'r', encoding='utf-8') as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            for line in csv_reader:
+                self.grid_layout.add_widget(self.label_word(line[0]))
+                self.grid_layout.add_widget(
+                    self.create_phonetics(line[1], self.file_path, line[4]))
+                self.grid_layout.add_widget(self.image(
+                    self.file_path, line[8], line[7]))
+                self.grid_layout.add_widget(self.example(line[9]))
