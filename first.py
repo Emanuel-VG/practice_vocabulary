@@ -20,10 +20,8 @@ class Window1(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        # ic(self.file_path)
         self.file_path = 'data/noun/technology/computer_internet'
         ic(self.file_path)
-        Window.size = (1366, 768)
         Window.left = 0
         Window.top = 0
         self.headers = RelativeLayout()
@@ -114,7 +112,7 @@ class Window1(Screen):
                 size_hint_x=.3,
             )
         else:
-            image_word = Label(text='', size_hint_x=.1)
+            image_word = Label(text='', size_hint_x=.001)
         with image_word.canvas.before:
             Color(0.52, 0.57, 0.67, 1)
             image_word.rect = Rectangle(
@@ -128,6 +126,7 @@ class Window1(Screen):
     def example(self, text):
         sentence = Label(
             text=text,
+            # text='un ejemplo',
             size_hint_x=1,
             color=(0, 0, 0, 1),
             text_size=(550, None),

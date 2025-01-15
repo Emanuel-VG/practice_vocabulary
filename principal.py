@@ -9,6 +9,7 @@ from icecream import ic
 class MyApp(App):
     def build(self):
         Window.size = (1366, 768)
+        # Window.size = (1366, 1000)
         Window.left = 0
         Window.top = 0
         sm = ScreenManager()

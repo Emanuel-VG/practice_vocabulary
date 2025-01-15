@@ -15,6 +15,7 @@ class Window2(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.path_set = ''
         themes_content = StackLayout(
             orientation='lr-tb', spacing=(5, 10), padding=10)
         with themes_content.canvas.before:
@@ -98,10 +99,14 @@ class Window2(Screen):
             background_normal='',
             color=(0, 0, 0, 1),
         )
-        button.bind(on_press=self.change_window)
+        button.bind(on_press=lambda instance: self.two_change(path))
         return button
+
+    def two_change(self, path):
+        self.path_set = 'data/'+path
+        self.change_window(self)
 
     def change_window(self, instance):
         window_1 = self.manager.get_screen('window1').path_from_window2(
-            'data/noun/employment/education')
+            self.path_set)
         self.manager.current = 'window1'
