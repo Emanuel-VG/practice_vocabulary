@@ -57,7 +57,6 @@ class Window2(Screen):
 
     def options_themes(self, paths_themes, file_path):
         dropDown = DropDown()
-        ic(paths_themes)
         for path in paths_themes:
             btn = Button(text=path, size_hint_y=None, height=44)
             btn.bind(on_release=lambda btn: dropDown.select(

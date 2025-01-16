@@ -1,4 +1,3 @@
-from icecream import ic
 import csv
 from kivy.uix.scrollview import ScrollView
 from kivy.app import App
@@ -23,7 +22,6 @@ class Window1(Screen):
         super().__init__(**kwargs)
         # self.file_path = 'data/noun/technology/computer_internet'
         self.file_path = 'data/verb/irregular_base_form'
-        ic(self.file_path)
         Window.left = 0
         Window.top = 0
         self.headers = RelativeLayout()
@@ -79,7 +77,6 @@ class Window1(Screen):
 
     def play_sound(self, path):
         sound = SoundLoader.load(path)
-        ic(path)
         if sound:
             sound.play()
 
@@ -167,7 +164,6 @@ class Window1(Screen):
         self.manager.current = 'window2'
 
     def path_from_window2(self, text):
-        ic(text)
         self.file_path = text
         self.title_button.text = self.file_path.replace('data/', '').upper()
         self.populate_grid()

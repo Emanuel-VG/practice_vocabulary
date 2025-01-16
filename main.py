@@ -3,7 +3,6 @@ from kivy.uix.screenmanager import ScreenManager
 from first import Window1
 from second import Window2
 from kivy.core.window import Window
-from icecream import ic
 
 
 class MyApp(App):
